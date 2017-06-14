@@ -4,8 +4,8 @@ library(timekit)
 library(ggplot2)
 
 data <- read.table(
-  './house.txt',
-  sep=";",
+  './household_power_consumption.txt',
+    sep=";",
   header=TRUE,
   as.is=TRUE)
 
@@ -40,13 +40,6 @@ data$Sub_metering_1 <- as.integer(data$Sub_metering_1)
 data$Sub_metering_2 <- as.integer(data$Sub_metering_2)
 data$Sub_metering_3 <- as.integer(data$Sub_metering_3)
 
-# back up of raw data
-dataBak <- data
-# restore
-#data <- dataBak
-
-### generate three timeseries objects, one for each submeter
-
 # create detail metric data, group by year/week
 dataTsYW <- 
   cbind(tk_get_timeseries_signature(data[,1]),data) %>%
@@ -56,8 +49,21 @@ dataTsYW <-
             SM3 = sum(Sub_metering_3)/1000) %>% 
   arrange(year, week)
 
-# create timeseries objects for the 3 submeters from dataTsYW
+# cull out the last 4 weeks of 2006 and throw out 53rd weeks
+# this makes a nice (2007, 1) index for the ts() object
+dataTsYW <- subset(dataTsYW, ((year > 2006)&(week != 53)))
 
-tsSM1 <- ts(dataTsYW[,c(1:3)])
-tsSM2 <- ts(dataTsYW[,c(1:2,4)])
-tsSM3 <- ts(dataTsYW[,c(1:2,5)])
+# plot SM1,2,3 with no Holt-Winters smoothing
+ts.plot(
+  ts(dataTsYW[,3], start=(c(2007, 1)), frequency=52),
+  ts(dataTsYW[,4], start=(c(2007, 1)), frequency=52),
+  ts(dataTsYW[,5], start=(c(2007, 1)), frequency=52)
+)
+
+# plot SM1 with HW smoothing (can only do one submeter at a time)
+plot(
+  HoltWinters(
+    ts(dataTsYW[,3], start=(c(2007, 1)), frequency=52), 
+    beta=FALSE, gamma=FALSE
+  )
+)
