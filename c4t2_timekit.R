@@ -79,3 +79,26 @@ forecast::plot.forecast(
     h=52
   )
 )
+
+# create a time series linear model 52 week forecast
+plot(
+  forecast(
+    tslm(
+      ts(dataTsYW[,3], start=(c(2007, 1)), frequency=52) 
+      ~ trend + season
+    ),
+    h=52
+  )
+)
+
+# show time series seasonal decomposition for SM1
+plot(
+  decompose(
+    ts(dataTsYW[,3], start=(c(2007, 1)), frequency=52)
+  )
+)
+
+# seasonal ggplot
+forecast::ggseasonplot(
+  ts(dataTsYW[,3], start=(c(2007, 1)), frequency=52)
+)
