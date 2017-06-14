@@ -100,5 +100,5 @@ plot(
 
 # seasonal ggplot
 forecast::ggseasonplot(
-  ts(dataTsYW[,3], start=(c(2007, 1)), frequency=52)
-)
+  ts(dataTsYW[,3], start=(c(2007, 1)), frequency=52) 
+) + labs(title="Seasonal SM1 consumption [kWh] by Year/Week")
