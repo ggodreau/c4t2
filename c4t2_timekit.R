@@ -2,7 +2,6 @@
 library(tidyquant)
 library(timekit)
 library(ggplot2)
-library(reshape2) #melt
 
 data <- read.table(
   './house.txt',
@@ -46,7 +45,7 @@ dataBak <- data
 # restore
 #data <- dataBak
 
-### chart #1, consumption across whole time span
+### generate three timeseries objects, one for each submeter
 
 # create detail metric data, group by year/week
 dataTsYW <- 
