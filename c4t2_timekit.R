@@ -2,6 +2,7 @@
 library(tidyquant)
 library(timekit)
 library(ggplot2)
+library(forecast)
 
 data <- read.table(
   './household_power_consumption.txt',
@@ -65,5 +66,16 @@ plot(
   HoltWinters(
     ts(dataTsYW[,3], start=(c(2007, 1)), frequency=52), 
     beta=FALSE, gamma=FALSE
+  )
+)
+
+# plot SM1 HW forecast for 1 year (52 weeks)
+forecast::plot.forecast(
+  forecast::forecast.HoltWinters(
+    HoltWinters(
+      ts(dataTsYW[,3], start=(c(2007, 1)), frequency=52), 
+      beta=FALSE, gamma=FALSE
+    ), 
+    h=52
   )
 )
